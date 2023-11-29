@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -25,13 +25,40 @@ async function run() {
     await client.connect();
 
     const donationData = client.db("donation").collection("donationData");
+    const cartData = client.db("donation").collection("cartData");
 
+    //donation data
     app.get("/data", async (req, res) => {
       const cursor = donationData.find();
       const result = await cursor.toArray();
       res.send(result);
     });
-    // Send a ping to confirm a successful connection
+    app.get("/data/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await donationData.findOne(query)
+      res.send(result);
+    });
+
+
+    //cart
+    app.post('/cart', async(req, res)=>{
+      const { _id, ...cart } = req.body;
+      const result = await cartData.insertOne(cart)
+      res.send(result)
+    })
+    app.get("/cart", async (req, res) => {
+      const cursor = cartData.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.delete('/cart/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await cartData.deleteOne(query)
+      res.send(result)
+    })
+    // Send a ping to confirm a successful connectionnode
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
