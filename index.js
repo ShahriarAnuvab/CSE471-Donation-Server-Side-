@@ -27,6 +27,7 @@ async function run() {
     const donationData = client.db("donation").collection("donationData");
     const cartData = client.db("donation").collection("cartData");
     const reviewData = client.db("donation").collection("Reviews");
+    const paymentData = client.db("donation").collection("payments");
 
     //donation data
     app.get("/data", async (req, res) => {
@@ -71,6 +72,13 @@ async function run() {
     app.post('/reviews', async(req, res)=>{
       const review = req.body
       const result = await reviewData.insertOne(review)
+      res.send(result)
+    })
+
+    //payment
+    app.post('/payment', async(req, res)=>{
+      const payment = req.body
+      const result = await paymentData.insertOne(payment)
       res.send(result)
     })
     // Send a ping to confirm a successful connectionnode
