@@ -67,6 +67,12 @@ async function run() {
       res.send(result)
 
     })
+    
+    app.post('/reviews', async(req, res)=>{
+      const review = req.body
+      const result = await reviewData.insertOne(review)
+      res.send(result)
+    })
     // Send a ping to confirm a successful connectionnode
     await client.db("admin").command({ ping: 1 });
     console.log(
