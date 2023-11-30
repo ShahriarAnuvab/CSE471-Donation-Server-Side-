@@ -26,6 +26,7 @@ async function run() {
 
     const donationData = client.db("donation").collection("donationData");
     const cartData = client.db("donation").collection("cartData");
+    const reviewData = client.db("donation").collection("Reviews");
 
     //donation data
     app.get("/data", async (req, res) => {
@@ -57,6 +58,14 @@ async function run() {
       const query = {_id: new ObjectId(id)}
       const result = await cartData.deleteOne(query)
       res.send(result)
+    })
+
+    // reviews
+    app.get('/reviews', async(req, res)=>{
+      const cursor = reviewData.find()
+      const result = await cursor.toArray()
+      res.send(result)
+
     })
     // Send a ping to confirm a successful connectionnode
     await client.db("admin").command({ ping: 1 });
